@@ -1,0 +1,1024 @@
+/*
+ * Exercicio 1 - Cadastro simples de alunos
+ *
+ * Cria uma struct Aluno com nome, matricula e nota.
+ * Le 5 alunos, armazena em um vetor de structs e exibe todos na tela.
+ * Regra do exercicio: usar apenas funcoes SEM retorno (void).
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ALUNOS 5
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int matricula;
+    float nota;
+} Aluno;
+
+/* Le os dados de todos os alunos e preenche o vetor (passado por referencia) */
+void lerAlunos(Aluno alunos[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Aluno %d ---\n", i + 1);
+
+        printf("Nome: ");
+        /* le a linha inteira, incluindo espacos, e remove o '\n' final */
+        fgets(alunos[i].nome, TAM_NOME, stdin);
+        alunos[i].nome[strcspn(alunos[i].nome, "\n")] = '\0';
+
+        printf("Matricula: ");
+        scanf("%d", &alunos[i].matricula);
+
+        printf("Nota: ");
+        scanf("%f", &alunos[i].nota);
+
+        getchar(); /* consome o '\n' deixado pelo scanf, para nao atrapalhar o proximo fgets */
+    }
+}
+
+/* Exibe os dados de todos os alunos do vetor */
+void exibirAlunos(Aluno alunos[], int n) {
+    printf("\n===== LISTA DE ALUNOS =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Aluno %d\n", i + 1);
+        printf("  Nome:      %s\n", alunos[i].nome);
+        printf("  Matricula: %d\n", alunos[i].matricula);
+        printf("  Nota:      %.2f\n", alunos[i].nota);
+    }
+}
+
+int main(void) {
+    Aluno alunos[MAX_ALUNOS];
+
+    lerAlunos(alunos, MAX_ALUNOS);
+    exibirAlunos(alunos, MAX_ALUNOS);
+
+    return 0;
+}
+
+/*
+ * Exercicio 2 - Media das notas
+ *
+ * A partir do exercicio 1, cria uma funcao COM retorno que recebe o vetor
+ * de alunos e retorna a media geral das notas. O resultado e mostrado
+ * no programa principal.
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ALUNOS 5
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int matricula;
+    float nota;
+} Aluno;
+
+/* void: le os dados de todos os alunos */
+void lerAlunos(Aluno alunos[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Aluno %d ---\n", i + 1);
+
+        printf("Nome: ");
+        fgets(alunos[i].nome, TAM_NOME, stdin);
+        alunos[i].nome[strcspn(alunos[i].nome, "\n")] = '\0';
+
+        printf("Matricula: ");
+        scanf("%d", &alunos[i].matricula);
+
+        printf("Nota: ");
+        scanf("%f", &alunos[i].nota);
+
+        getchar();
+    }
+}
+
+/* void: exibe os dados de todos os alunos */
+void exibirAlunos(Aluno alunos[], int n) {
+    printf("\n===== LISTA DE ALUNOS =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Aluno %d - %s | Matricula: %d | Nota: %.2f\n",
+               i + 1, alunos[i].nome, alunos[i].matricula, alunos[i].nota);
+    }
+}
+
+/* COM retorno: recebe o vetor de alunos e devolve a media geral das notas */
+float calcularMedia(Aluno alunos[], int n) {
+    float soma = 0.0f;
+    for (int i = 0; i < n; i++) {
+        soma += alunos[i].nota;
+    }
+    return soma / n;
+}
+
+int main(void) {
+    Aluno alunos[MAX_ALUNOS];
+
+    lerAlunos(alunos, MAX_ALUNOS);
+    exibirAlunos(alunos, MAX_ALUNOS);
+
+    float media = calcularMedia(alunos, MAX_ALUNOS);
+    printf("\nMedia geral da turma: %.2f\n", media);
+
+    return 0;
+}
+
+/*
+ * Exercicio 3 - Busca por matricula
+ *
+ * Funcao COM retorno que recebe o vetor de alunos e um numero de matricula
+ * e retorna o indice do aluno (ou -1 se nao encontrado).
+ * No main, o usuario digita uma matricula e o programa exibe os dados
+ * do aluno correspondente.
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ALUNOS 5
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int matricula;
+    float nota;
+} Aluno;
+
+void lerAlunos(Aluno alunos[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Aluno %d ---\n", i + 1);
+
+        printf("Nome: ");
+        fgets(alunos[i].nome, TAM_NOME, stdin);
+        alunos[i].nome[strcspn(alunos[i].nome, "\n")] = '\0';
+
+        printf("Matricula: ");
+        scanf("%d", &alunos[i].matricula);
+
+        printf("Nota: ");
+        scanf("%f", &alunos[i].nota);
+
+        getchar();
+    }
+}
+
+void exibirAlunos(Aluno alunos[], int n) {
+    printf("\n===== LISTA DE ALUNOS =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Aluno %d - %s | Matricula: %d | Nota: %.2f\n",
+               i + 1, alunos[i].nome, alunos[i].matricula, alunos[i].nota);
+    }
+}
+
+/* COM retorno: procura a matricula no vetor e devolve o indice, ou -1 */
+int buscarPorMatricula(Aluno alunos[], int n, int matricula) {
+    for (int i = 0; i < n; i++) {
+        if (alunos[i].matricula == matricula) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main(void) {
+    Aluno alunos[MAX_ALUNOS];
+
+    lerAlunos(alunos, MAX_ALUNOS);
+    exibirAlunos(alunos, MAX_ALUNOS);
+
+    int matriculaBuscada;
+    printf("\nDigite a matricula que deseja buscar: ");
+    scanf("%d", &matriculaBuscada);
+
+    int indice = buscarPorMatricula(alunos, MAX_ALUNOS, matriculaBuscada);
+
+    if (indice != -1) {
+        printf("\nAluno encontrado!\n");
+        printf("Nome:      %s\n", alunos[indice].nome);
+        printf("Matricula: %d\n", alunos[indice].matricula);
+        printf("Nota:      %.2f\n", alunos[indice].nota);
+    } else {
+        printf("\nNenhum aluno encontrado com a matricula %d.\n", matriculaBuscada);
+    }
+
+    return 0;
+}
+
+/*
+ * Exercicio 4 - Salvar em arquivo texto
+ *
+ * Usando a struct Aluno, grava os dados de todos os alunos em um arquivo
+ * de texto chamado "alunos.txt", um por linha, usando fprintf.
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_ALUNOS 5
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int matricula;
+    float nota;
+} Aluno;
+
+void lerAlunos(Aluno alunos[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Aluno %d ---\n", i + 1);
+
+        printf("Nome: ");
+        fgets(alunos[i].nome, TAM_NOME, stdin);
+        alunos[i].nome[strcspn(alunos[i].nome, "\n")] = '\0';
+
+        printf("Matricula: ");
+        scanf("%d", &alunos[i].matricula);
+
+        printf("Nota: ");
+        scanf("%f", &alunos[i].nota);
+
+        getchar();
+    }
+}
+
+void exibirAlunos(Aluno alunos[], int n) {
+    printf("\n===== LISTA DE ALUNOS =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Aluno %d - %s | Matricula: %d | Nota: %.2f\n",
+               i + 1, alunos[i].nome, alunos[i].matricula, alunos[i].nota);
+    }
+}
+
+/* void: grava os alunos no arquivo texto "alunos.txt", um por linha */
+void salvarAlunosEmArquivo(Aluno alunos[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        /* formato: nome;matricula;nota */
+        fprintf(arquivo, "%s;%d;%.2f\n", alunos[i].nome, alunos[i].matricula, alunos[i].nota);
+    }
+
+    fclose(arquivo);
+    printf("\nDados gravados com sucesso em '%s'!\n", nomeArquivo);
+}
+
+int main(void) {
+    Aluno alunos[MAX_ALUNOS];
+
+    lerAlunos(alunos, MAX_ALUNOS);
+    exibirAlunos(alunos, MAX_ALUNOS);
+
+    salvarAlunosEmArquivo(alunos, MAX_ALUNOS, "alunos.txt");
+
+    return 0;
+}
+
+/*
+ * Exercicio 5 - Ler arquivo texto
+ *
+ * Le o arquivo "alunos.txt" (gerado no exercicio 4) e carrega os dados
+ * para um vetor de structs novamente, exibindo-os na tela.
+ * Usa fscanf, no formato "nome;matricula;nota" (o mesmo usado na gravacao).
+ *
+ * Observacao: execute o ex04_salvar_alunos.c primeiro para gerar o
+ * arquivo "alunos.txt" nesta mesma pasta.
+ */
+
+#include <stdio.h>
+
+#define MAX_ALUNOS 5
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int matricula;
+    float nota;
+} Aluno;
+
+/* COM retorno: le o arquivo e devolve quantos alunos foram carregados */
+int lerAlunosDeArquivo(Aluno alunos[], int max, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro: nao foi possivel abrir o arquivo '%s'.\n", nomeArquivo);
+        printf("Execute o exercicio 4 (ex04_salvar_alunos.c) primeiro.\n");
+        return 0;
+    }
+
+    int quantidade = 0;
+    /* le no formato "nome;matricula;nota", um registro por linha */
+    while (quantidade < max &&
+           fscanf(arquivo, "%49[^;];%d;%f\n",
+                  alunos[quantidade].nome,
+                  &alunos[quantidade].matricula,
+                  &alunos[quantidade].nota) == 3) {
+        quantidade++;
+    }
+
+    fclose(arquivo);
+    return quantidade;
+}
+
+/* void: exibe os dados de todos os alunos do vetor */
+void exibirAlunos(Aluno alunos[], int n) {
+    printf("\n===== ALUNOS CARREGADOS DO ARQUIVO =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Aluno %d - %s | Matricula: %d | Nota: %.2f\n",
+               i + 1, alunos[i].nome, alunos[i].matricula, alunos[i].nota);
+    }
+}
+
+int main(void) {
+    Aluno alunos[MAX_ALUNOS];
+
+    int total = lerAlunosDeArquivo(alunos, MAX_ALUNOS, "alunos.txt");
+
+    if (total > 0) {
+        printf("Total de alunos carregados: %d\n", total);
+        exibirAlunos(alunos, total);
+    }
+
+    return 0;
+}
+
+/*
+ * Exercicio 6 - Cadastro de produtos
+ *
+ * struct Produto com codigo, descricao, preco e quantidade.
+ * Funcoes:
+ *   void cadastrar(Produto vet[], int n);
+ *   void listar(Produto vet[], int n);
+ *   float calcularTotal(Produto vet[], int n); -> valor total em estoque
+ * Grava os dados em um arquivo de texto chamado "estoque.txt".
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_PRODUTOS 20
+#define TAM_DESC 60
+
+typedef struct {
+    int codigo;
+    char descricao[TAM_DESC];
+    float preco;
+    int quantidade;
+} Produto;
+
+/* void: cadastra n produtos no vetor */
+void cadastrar(Produto vet[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Produto %d ---\n", i + 1);
+
+        printf("Codigo: ");
+        scanf("%d", &vet[i].codigo);
+        getchar();
+
+        printf("Descricao: ");
+        fgets(vet[i].descricao, TAM_DESC, stdin);
+        vet[i].descricao[strcspn(vet[i].descricao, "\n")] = '\0';
+
+        printf("Preco: ");
+        scanf("%f", &vet[i].preco);
+
+        printf("Quantidade: ");
+        scanf("%d", &vet[i].quantidade);
+        getchar();
+    }
+}
+
+/* void: lista todos os produtos do vetor */
+void listar(Produto vet[], int n) {
+    printf("\n===== ESTOQUE DE PRODUTOS =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("Codigo: %-6d Descricao: %-25s Preco: R$ %-8.2f Qtd: %d\n",
+               vet[i].codigo, vet[i].descricao, vet[i].preco, vet[i].quantidade);
+    }
+}
+
+/* COM retorno: calcula o valor total em estoque (soma de preco * quantidade) */
+float calcularTotal(Produto vet[], int n) {
+    float total = 0.0f;
+    for (int i = 0; i < n; i++) {
+        total += vet[i].preco * vet[i].quantidade;
+    }
+    return total;
+}
+
+/* void: grava os produtos no arquivo texto "estoque.txt" */
+void salvarEstoque(Produto vet[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        /* formato: codigo;descricao;preco;quantidade */
+        fprintf(arquivo, "%d;%s;%.2f;%d\n",
+                vet[i].codigo, vet[i].descricao, vet[i].preco, vet[i].quantidade);
+    }
+
+    fclose(arquivo);
+    printf("\nEstoque gravado com sucesso em '%s'!\n", nomeArquivo);
+}
+
+int main(void) {
+    int n;
+
+    printf("Quantos produtos deseja cadastrar (max %d)? ", MAX_PRODUTOS);
+    scanf("%d", &n);
+    getchar();
+
+    if (n <= 0 || n > MAX_PRODUTOS) {
+        printf("Quantidade invalida.\n");
+        return 1;
+    }
+
+    Produto produtos[MAX_PRODUTOS];
+
+    cadastrar(produtos, n);
+    listar(produtos, n);
+
+    float total = calcularTotal(produtos, n);
+    printf("\nValor total em estoque: R$ %.2f\n", total);
+
+    salvarEstoque(produtos, n, "estoque.txt");
+
+    return 0;
+}
+
+/*
+ * Exercicio 7 - Atualizar quantidade em arquivo
+ *
+ * Amplia o exercicio 6. Recebe o codigo de um produto e uma nova
+ * quantidade, e atualiza o arquivo "estoque.txt" com as novas informacoes.
+ *
+ * Observacao: execute o ex06_cadastro_produtos.c primeiro para gerar o
+ * arquivo "estoque.txt" nesta mesma pasta.
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_PRODUTOS 20
+#define TAM_DESC 60
+
+typedef struct {
+    int codigo;
+    char descricao[TAM_DESC];
+    float preco;
+    int quantidade;
+} Produto;
+
+/* COM retorno: le todos os produtos do arquivo para o vetor; devolve quantos leu */
+int lerEstoque(Produto vet[], int max, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        return -1; /* arquivo nao existe */
+    }
+
+    int n = 0;
+    while (n < max &&
+           fscanf(arquivo, "%d;%59[^;];%f;%d\n",
+                  &vet[n].codigo, vet[n].descricao, &vet[n].preco, &vet[n].quantidade) == 4) {
+        n++;
+    }
+
+    fclose(arquivo);
+    return n;
+}
+
+/* void: grava todos os produtos do vetor no arquivo (sobrescreve) */
+void salvarEstoque(Produto vet[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        fprintf(arquivo, "%d;%s;%.2f;%d\n",
+                vet[i].codigo, vet[i].descricao, vet[i].preco, vet[i].quantidade);
+    }
+
+    fclose(arquivo);
+}
+
+/*
+ * COM retorno: procura o produto pelo codigo dentro do arquivo "estoque.txt",
+ * atualiza a quantidade e regrava o arquivo.
+ * Retorna 1 se encontrou e atualizou, 0 se o codigo nao existe no arquivo.
+ */
+int atualizarQuantidade(const char *nomeArquivo, int codigo, int novaQuantidade) {
+    Produto produtos[MAX_PRODUTOS];
+    int n = lerEstoque(produtos, MAX_PRODUTOS, nomeArquivo);
+
+    if (n < 0) {
+        printf("Erro: arquivo '%s' nao encontrado. Execute o exercicio 6 primeiro.\n", nomeArquivo);
+        return 0;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (produtos[i].codigo == codigo) {
+            produtos[i].quantidade = novaQuantidade;
+            salvarEstoque(produtos, n, nomeArquivo);
+            return 1;
+        }
+    }
+
+    return 0; /* codigo nao encontrado */
+}
+
+int main(void) {
+    int codigo, novaQtd;
+
+    printf("Digite o codigo do produto a atualizar: ");
+    scanf("%d", &codigo);
+
+    printf("Digite a nova quantidade: ");
+    scanf("%d", &novaQtd);
+
+    int sucesso = atualizarQuantidade("estoque.txt", codigo, novaQtd);
+
+    if (sucesso) {
+        printf("\nQuantidade do produto %d atualizada para %d com sucesso!\n", codigo, novaQtd);
+    } else {
+        printf("\nProduto com codigo %d nao encontrado em estoque.txt.\n", codigo);
+    }
+
+    return 0;
+}
+
+/*
+ * Exercicio 8 - Sistema de pontuacao de jogadores
+ *
+ * struct Jogador com nome, pontuacao e nivel.
+ * Funcoes:
+ *   - cadastrar jogadores em um vetor
+ *   - ordenar o vetor por pontuacao (Bubble Sort)
+ *   - gravar o ranking em um arquivo texto
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_JOGADORES 20
+#define TAM_NOME 50
+
+typedef struct {
+    char nome[TAM_NOME];
+    int pontuacao;
+    int nivel;
+} Jogador;
+
+/* void: cadastra n jogadores no vetor */
+void cadastrarJogadores(Jogador vet[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("\n--- Jogador %d ---\n", i + 1);
+
+        printf("Nome: ");
+        fgets(vet[i].nome, TAM_NOME, stdin);
+        vet[i].nome[strcspn(vet[i].nome, "\n")] = '\0';
+
+        printf("Pontuacao: ");
+        scanf("%d", &vet[i].pontuacao);
+
+        printf("Nivel: ");
+        scanf("%d", &vet[i].nivel);
+        getchar();
+    }
+}
+
+/* void: ordena o vetor por pontuacao (decrescente) usando Bubble Sort */
+void ordenarPorPontuacao(Jogador vet[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (vet[j].pontuacao < vet[j + 1].pontuacao) {
+                Jogador temp = vet[j];
+                vet[j] = vet[j + 1];
+                vet[j + 1] = temp;
+            }
+        }
+    }
+}
+
+/* void: exibe o ranking na tela */
+void exibirRanking(Jogador vet[], int n) {
+    printf("\n===== RANKING DE JOGADORES =====\n");
+    for (int i = 0; i < n; i++) {
+        printf("%dº lugar - %s | Pontuacao: %d | Nivel: %d\n",
+               i + 1, vet[i].nome, vet[i].pontuacao, vet[i].nivel);
+    }
+}
+
+/* void: grava o ranking (ja ordenado) em um arquivo texto */
+void salvarRanking(Jogador vet[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    fprintf(arquivo, "===== RANKING DE JOGADORES =====\n");
+    for (int i = 0; i < n; i++) {
+        fprintf(arquivo, "%dº lugar - %s;%d;%d\n",
+                i + 1, vet[i].nome, vet[i].pontuacao, vet[i].nivel);
+    }
+
+    fclose(arquivo);
+    printf("\nRanking gravado com sucesso em '%s'!\n", nomeArquivo);
+}
+
+int main(void) {
+    int n;
+
+    printf("Quantos jogadores deseja cadastrar (max %d)? ", MAX_JOGADORES);
+    scanf("%d", &n);
+    getchar();
+
+    if (n <= 0 || n > MAX_JOGADORES) {
+        printf("Quantidade invalida.\n");
+        return 1;
+    }
+
+    Jogador jogadores[MAX_JOGADORES];
+
+    cadastrarJogadores(jogadores, n);
+    ordenarPorPontuacao(jogadores, n);
+    exibirRanking(jogadores, n);
+    salvarRanking(jogadores, n, "ranking.txt");
+
+    return 0;
+}
+
+/*
+ * Exercicio 9 - Controle de biblioteca
+ *
+ * struct Livro com titulo, autor, ano e status (0 = disponivel, 1 = emprestado).
+ * Funcoes:
+ *   - cadastrar livros em um vetor
+ *   - listar todos
+ *   - emprestar (alterar status)
+ *   - salvar e ler os dados de/para um arquivo "livros.txt"
+ *
+ * O programa tem um menu que carrega o arquivo "livros.txt" ao iniciar
+ * (se existir) e salva as alteracoes nele.
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LIVROS 50
+#define TAM_TITULO 60
+#define TAM_AUTOR 40
+#define ARQUIVO_LIVROS "livros.txt"
+
+typedef struct {
+    char titulo[TAM_TITULO];
+    char autor[TAM_AUTOR];
+    int ano;
+    int status; /* 0 = disponivel, 1 = emprestado */
+} Livro;
+
+/* void: cadastra um novo livro no vetor (status inicial = disponivel) */
+void cadastrarLivro(Livro vet[], int *n, int max) {
+    if (*n >= max) {
+        printf("Biblioteca cheia! Nao e possivel cadastrar mais livros.\n");
+        return;
+    }
+
+    Livro novo;
+
+    printf("Titulo: ");
+    fgets(novo.titulo, TAM_TITULO, stdin);
+    novo.titulo[strcspn(novo.titulo, "\n")] = '\0';
+
+    printf("Autor: ");
+    fgets(novo.autor, TAM_AUTOR, stdin);
+    novo.autor[strcspn(novo.autor, "\n")] = '\0';
+
+    printf("Ano: ");
+    scanf("%d", &novo.ano);
+    getchar();
+
+    novo.status = 0; /* todo livro novo comeca disponivel */
+
+    vet[*n] = novo;
+    (*n)++;
+
+    printf("Livro cadastrado com sucesso!\n");
+}
+
+/* void: lista todos os livros do vetor */
+void listarLivros(Livro vet[], int n) {
+    printf("\n===== ACERVO DA BIBLIOTECA =====\n");
+    if (n == 0) {
+        printf("Nenhum livro cadastrado.\n");
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        printf("[%d] %s - %s (%d) | %s\n",
+               i, vet[i].titulo, vet[i].autor, vet[i].ano,
+               vet[i].status == 0 ? "Disponivel" : "Emprestado");
+    }
+}
+
+/* COM retorno: marca o livro com o titulo informado como emprestado (status = 1) */
+int emprestarLivro(Livro vet[], int n, const char *titulo) {
+    for (int i = 0; i < n; i++) {
+        if (strcmp(vet[i].titulo, titulo) == 0) {
+            if (vet[i].status == 1) {
+                printf("O livro '%s' ja esta emprestado.\n", titulo);
+                return 0;
+            }
+            vet[i].status = 1;
+            return 1;
+        }
+    }
+    return -1; /* nao encontrado */
+}
+
+/* void: grava todos os livros no arquivo texto */
+void salvarLivros(Livro vet[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        /* formato: titulo;autor;ano;status */
+        fprintf(arquivo, "%s;%s;%d;%d\n",
+                vet[i].titulo, vet[i].autor, vet[i].ano, vet[i].status);
+    }
+
+    fclose(arquivo);
+}
+
+/* COM retorno: le os livros do arquivo para o vetor; devolve quantos leu (0 se arquivo nao existe) */
+int carregarLivros(Livro vet[], int max, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        return 0; /* primeira execucao: ainda nao existe arquivo */
+    }
+
+    int n = 0;
+    while (n < max &&
+           fscanf(arquivo, "%59[^;];%39[^;];%d;%d\n",
+                  vet[n].titulo, vet[n].autor, &vet[n].ano, &vet[n].status) == 4) {
+        n++;
+    }
+
+    fclose(arquivo);
+    return n;
+}
+
+void exibirMenu(void) {
+    printf("\n===== BIBLIOTECA =====\n");
+    printf("1 - Cadastrar livro\n");
+    printf("2 - Listar livros\n");
+    printf("3 - Emprestar livro\n");
+    printf("4 - Salvar e sair\n");
+    printf("Escolha uma opcao: ");
+}
+
+int main(void) {
+    Livro livros[MAX_LIVROS];
+    int n = carregarLivros(livros, MAX_LIVROS, ARQUIVO_LIVROS);
+
+    printf("Biblioteca carregada: %d livro(s) encontrados em '%s'.\n", n, ARQUIVO_LIVROS);
+
+    int opcao;
+    do {
+        exibirMenu();
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                cadastrarLivro(livros, &n, MAX_LIVROS);
+                break;
+            case 2:
+                listarLivros(livros, n);
+                break;
+            case 3: {
+                char titulo[TAM_TITULO];
+                printf("Digite o titulo do livro a emprestar: ");
+                fgets(titulo, TAM_TITULO, stdin);
+                titulo[strcspn(titulo, "\n")] = '\0';
+
+                int resultado = emprestarLivro(livros, n, titulo);
+                if (resultado == 1) {
+                    printf("Livro '%s' emprestado com sucesso!\n", titulo);
+                } else if (resultado == -1) {
+                    printf("Livro '%s' nao encontrado.\n", titulo);
+                }
+                break;
+            }
+            case 4:
+                salvarLivros(livros, n, ARQUIVO_LIVROS);
+                printf("Dados salvos em '%s'. Ate mais!\n", ARQUIVO_LIVROS);
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while (opcao != 4);
+
+    return 0;
+}
+
+/*
+ * Exercicio 10 - Relatorio de vendas com funcoes
+ *
+ * struct Venda com produto, quantidade, valor_unitario e data.
+ * Funcoes:
+ *   - cadastrar vendas e gravar em "vendas.txt"
+ *   - ler o arquivo e exibir todas as vendas
+ *   - funcao COM retorno que calcula o total vendido em determinado dia
+ *   - funcao para gerar um relatorio geral de vendas (total e media)
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_VENDAS 100
+#define TAM_PRODUTO 40
+#define TAM_DATA 11 /* formato dd/mm/aaaa + '\0' */
+#define ARQUIVO_VENDAS "vendas.txt"
+
+typedef struct {
+    char produto[TAM_PRODUTO];
+    int quantidade;
+    float valor_unitario;
+    char data[TAM_DATA]; /* formato: dd/mm/aaaa */
+} Venda;
+
+/* void: cadastra uma nova venda no vetor */
+void cadastrarVenda(Venda vet[], int *n, int max) {
+    if (*n >= max) {
+        printf("Limite de vendas atingido!\n");
+        return;
+    }
+
+    Venda nova;
+
+    printf("Produto: ");
+    fgets(nova.produto, TAM_PRODUTO, stdin);
+    nova.produto[strcspn(nova.produto, "\n")] = '\0';
+
+    printf("Quantidade: ");
+    scanf("%d", &nova.quantidade);
+
+    printf("Valor unitario: ");
+    scanf("%f", &nova.valor_unitario);
+    getchar();
+
+    printf("Data (dd/mm/aaaa): ");
+    fgets(nova.data, TAM_DATA, stdin);
+    nova.data[strcspn(nova.data, "\n")] = '\0';
+
+    vet[*n] = nova;
+    (*n)++;
+
+    printf("Venda cadastrada com sucesso!\n");
+}
+
+/* void: grava todas as vendas do vetor no arquivo texto */
+void salvarVendas(Venda vet[], int n, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo %s para escrita!\n", nomeArquivo);
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        /* formato: produto;quantidade;valor_unitario;data */
+        fprintf(arquivo, "%s;%d;%.2f;%s\n",
+                vet[i].produto, vet[i].quantidade, vet[i].valor_unitario, vet[i].data);
+    }
+
+    fclose(arquivo);
+}
+
+/* COM retorno: le as vendas do arquivo para o vetor; devolve quantas leu (0 se nao existe) */
+int carregarVendas(Venda vet[], int max, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        return 0;
+    }
+
+    int n = 0;
+    while (n < max &&
+           fscanf(arquivo, "%39[^;];%d;%f;%10[^\n]\n",
+                  vet[n].produto, &vet[n].quantidade, &vet[n].valor_unitario, vet[n].data) == 4) {
+        n++;
+    }
+
+    fclose(arquivo);
+    return n;
+}
+
+/* void: le o arquivo de vendas e exibe todas na tela */
+void exibirVendas(Venda vet[], int n) {
+    printf("\n===== TODAS AS VENDAS =====\n");
+    if (n == 0) {
+        printf("Nenhuma venda cadastrada.\n");
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        printf("%s | Qtd: %d | Valor unit.: R$ %.2f | Data: %s\n",
+               vet[i].produto, vet[i].quantidade, vet[i].valor_unitario, vet[i].data);
+    }
+}
+
+/* COM retorno: calcula o total vendido (em R$) em uma determinada data */
+float totalVendidoNaData(Venda vet[], int n, const char *data) {
+    float total = 0.0f;
+    for (int i = 0; i < n; i++) {
+        if (strcmp(vet[i].data, data) == 0) {
+            total += vet[i].quantidade * vet[i].valor_unitario;
+        }
+    }
+    return total;
+}
+
+/* void: gera um relatorio geral de vendas, exibindo o total e a media por venda */
+void relatorioGeral(Venda vet[], int n) {
+    printf("\n===== RELATORIO GERAL DE VENDAS =====\n");
+    if (n == 0) {
+        printf("Nenhuma venda cadastrada.\n");
+        return;
+    }
+
+    float totalGeral = 0.0f;
+    for (int i = 0; i < n; i++) {
+        totalGeral += vet[i].quantidade * vet[i].valor_unitario;
+    }
+    float media = totalGeral / n;
+
+    printf("Quantidade de vendas: %d\n", n);
+    printf("Total vendido:        R$ %.2f\n", totalGeral);
+    printf("Media por venda:      R$ %.2f\n", media);
+}
+
+void exibirMenu(void) {
+    printf("\n===== RELATORIO DE VENDAS =====\n");
+    printf("1 - Cadastrar venda\n");
+    printf("2 - Listar todas as vendas\n");
+    printf("3 - Total vendido em uma data\n");
+    printf("4 - Relatorio geral (total e media)\n");
+    printf("5 - Salvar e sair\n");
+    printf("Escolha uma opcao: ");
+}
+
+int main(void) {
+    Venda vendas[MAX_VENDAS];
+    int n = carregarVendas(vendas, MAX_VENDAS, ARQUIVO_VENDAS);
+
+    printf("Vendas carregadas: %d registro(s) encontrados em '%s'.\n", n, ARQUIVO_VENDAS);
+
+    int opcao;
+    do {
+        exibirMenu();
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                cadastrarVenda(vendas, &n, MAX_VENDAS);
+                break;
+            case 2:
+                exibirVendas(vendas, n);
+                break;
+            case 3: {
+                char data[TAM_DATA];
+                printf("Digite a data (dd/mm/aaaa): ");
+                fgets(data, TAM_DATA, stdin);
+                data[strcspn(data, "\n")] = '\0';
+
+                float total = totalVendidoNaData(vendas, n, data);
+                printf("Total vendido em %s: R$ %.2f\n", data, total);
+                break;
+            }
+            case 4:
+                relatorioGeral(vendas, n);
+                break;
+            case 5:
+                salvarVendas(vendas, n, ARQUIVO_VENDAS);
+                printf("Dados salvos em '%s'. Ate mais!\n", ARQUIVO_VENDAS);
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while (opcao != 5);
+
+    return 0;
+}
