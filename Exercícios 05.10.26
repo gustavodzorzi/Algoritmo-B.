@@ -1,1 +1,26 @@
-##1) construir um metodo que receba um número de cpf sem pontuação e retorna se o cpf é valido, porém, avaliando somente a quantidade de digitos (11 digitos)
+1) construir um metodo que receba um número de cpf sem pontuação e retorna se o cpf é valido, porém, avaliando somente a quantidade de digitos (11 digitos)
+ import java.util.Scanner;
+
+public class Main {
+
+    // Método que verifica se o CPF possui 11 dígitos
+    public static boolean validarCPF(String cpf) {
+        return cpf.length() == 11;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.print("Digite o CPF sem pontuação: ");
+        String cpf = entrada.nextLine();
+
+        if (validarCPF(cpf)) {
+            System.out.println("CPF válido!");
+        } else {
+            System.out.println("CPF inválido!");
+        }
+
+        entrada.close();
+    }
+}
