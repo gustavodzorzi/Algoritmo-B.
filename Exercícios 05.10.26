@@ -24,3 +24,65 @@ public class Main {
         entrada.close();
     }
 }
+
+2) construir um metodo que recebe uma data no formato dd/mm/aaaa e retorna se a data é válida, porém, avaliando a quantidade de digitos obrigatórios (10 caracteres)
+
+import java.util.Scanner;
+
+public class Main {
+
+    // Método que verifica se a data possui 10 caracteres
+    public static boolean validarData(String data) {
+        return data.length() == 10;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.print("Digite uma data no formato dd/mm/aaaa: ");
+        String data = entrada.nextLine();
+
+        if (validarData(data)) {
+            System.out.println("Data válida!");
+        } else {
+            System.out.println("Data inválida!");
+        }
+
+        entrada.close();
+    }
+}
+
+3) construir um método que recebe um nome completo e retorna o email desse nome, obedecendo a seguinte regra: primeiroNome.ultimoNome@ufn.edu.br.
+
+import java.util.Scanner;
+
+public class Main {
+
+    // Método que recebe o nome completo e retorna o e-mail
+    public static String gerarEmail(String nomeCompleto) {
+
+        String[] nomes = nomeCompleto.trim().split("\\s+");
+
+        String primeiroNome = nomes[0];
+        String ultimoNome = nomes[nomes.length - 1];
+
+        return primeiroNome.toLowerCase() + "."
+                + ultimoNome.toLowerCase()
+                + "@ufn.edu.br";
+    }
+
+    public static void main(String[] args) {
+
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.print("Digite o nome completo: ");
+        String nome = entrada.nextLine();
+
+        String email = gerarEmail(nome);
+
+        System.out.println("E-mail: " + email);
+
+        entrada.close();
+    }
+}
