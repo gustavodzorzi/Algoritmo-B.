@@ -1,0 +1,61 @@
+ Exercício 1 — Exibir os números que aparecem nos dois vetores
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void exercicio1(vector<int> vetorA, vector<int> vetorB) {
+    for (int i = 0; i < vetorA.size(); i++) {
+        for (int j = 0; j < vetorB.size(); j++) {
+            if (vetorA[i] == vetorB[j]) {
+                cout << vetorA[i] << "\t";
+                break;
+            }
+        }
+    }
+}
+
+int main() {
+    vector<int> vetorA = {10, 20, 30, 40, 50};
+    vector<int> vetorB = {30, 40, 60, 70, 10};
+
+    exercicio1(vetorA, vetorB);
+
+    return 0;
+}
+
+ Exercício 2 — Armazenar os números comuns em um vetor de resultado
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector<int> exercicio2(vector<int> vetorA, vector<int> vetorB) {
+    vector<int> vetorResultado;
+
+    for (int i = 0; i < vetorA.size(); i++) {
+        for (int j = 0; j < vetorB.size(); j++) {
+            if (vetorA[i] == vetorB[j]) {
+                vetorResultado.push_back(vetorA[i]);
+                break;
+            }
+        }
+    }
+
+    return vetorResultado;
+}
+
+int main() {
+    vector<int> vetorA = {10, 20, 30, 40, 50};
+    vector<int> vetorB = {30, 40, 60, 70, 10};
+
+    vector<int> vetorResultado = exercicio2(vetorA, vetorB);
+
+    for (int i = 0; i < vetorResultado.size(); i++) {
+        cout << vetorResultado[i] << "\t";
+    }
+
+    cout << endl;
+
+    return 0;
+}
